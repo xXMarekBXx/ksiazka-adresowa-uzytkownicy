@@ -10,42 +10,42 @@
 using namespace std;
 
 
-struct Uzytkownik {};
+struct Uzytkownik;
 
-vector <Uzytkownik> rejestracja(vector <Uzytkownik> uzytkownicy) {};
+vector <Uzytkownik> rejestracja(vector <Uzytkownik> uzytkownicy);
 	
-int logowanie(vector <Uzytkownik> uzytkownicy) {};
+int logowanie(vector <Uzytkownik> uzytkownicy);
 
-vector <Uzytkownik> zmianaHasla(vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika) {};
+vector <Uzytkownik> zmianaHasla(vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
 
 
-struct Znajomy {};
+struct Znajomy;
 
-vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych) {};
+vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych);
 
-vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych) {};
+vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych);
 
-bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych) {};
+bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych);
 
-bool szukanieKonkretnegoImieniaWWektorze(vector<Znajomy> wektorZnajomych, string imieDoWyszukania) {};
+bool szukanieKonkretnegoImieniaWWektorze(vector<Znajomy> wektorZnajomych, string imieDoWyszukania);
 
-void wyszukiwanieZnajomegoPoImieniu(vector<Znajomy> wektorZnajomych) {};
+void wyszukiwanieZnajomegoPoImieniu(vector<Znajomy> wektorZnajomych);
 
-bool szukanieKonkretnegoNazwiskaWWektorze(vector<Znajomy> wektorZnajomych, string nazwiskoDoWyszukania) {};
+bool szukanieKonkretnegoNazwiskaWWektorze(vector<Znajomy> wektorZnajomych, string nazwiskoDoWyszukania);
 
-void wyszukiwanieZnajomegoPoNazwisku(vector<Znajomy> wektorZnajomych) {};
+void wyszukiwanieZnajomegoPoNazwisku(vector<Znajomy> wektorZnajomych);
 
-void wybierzSposobWyszukiwaniaZnajomego(vector <Znajomy> &wektorZnajomych) {};
+void wybierzSposobWyszukiwaniaZnajomego(vector <Znajomy> &wektorZnajomych);
 
-bool szukanieKonkretnegoIdWWektorze(vector<Znajomy> wektorZnajomych, int szukaneId) {};
+bool szukanieKonkretnegoIdWWektorze(vector<Znajomy> wektorZnajomych, int szukaneId);
 
-vector<Znajomy> usuwanieZnajomegoZListyKontaktow(vector<Znajomy> wektorZnajomych) {};
+vector<Znajomy> usuwanieZnajomegoZListyKontaktow(vector<Znajomy> wektorZnajomych);
 
-vector<Znajomy> edytujZnajomego(vector<Znajomy> wektorZnajomych, int idZnajomegoDoEdycji, int wyborUrzytkownika, string ktoraDanaZmienic) {};
+vector<Znajomy> edytujZnajomego(vector<Znajomy> wektorZnajomych, int idZnajomegoDoEdycji, int wyborUrzytkownika, string ktoraDanaZmienic);
 
-vector<Znajomy> wyswietlPodmenuEdycjiZnajomego(vector<Znajomy> wektorZnajomych) {};
+vector<Znajomy> wyswietlPodmenuEdycjiZnajomego(vector<Znajomy> wektorZnajomych);
 
-void balladaNaDowidzenia() {};
+void balladaNaDowidzenia();
 
 
 
