@@ -26,10 +26,9 @@ vector <Uzytkownik> zmianaHasla(vector <Uzytkownik> uzytkownicy, int idZalogowan
 
 struct Znajomy;
 
-vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych);
+vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy);
 
-vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych);
-//vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy);
+vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
 
 bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych);
 
@@ -63,7 +62,7 @@ int main()
 	int idZalogowanegoUzytkownika = 0;	
 
 	vector<Znajomy> wektorZnajomych;
-	wektorZnajomych = odczytZnajomychZPliku(wektorZnajomych);
+	wektorZnajomych = odczytZnajomychZPliku(wektorZnajomych, uzytkownicy);
 
 
 	while (true)
@@ -111,7 +110,7 @@ int main()
 			switch (wyborUrzytkownika)
 			{
 			case 1:
-				wektorZnajomych = dodajZnajomegoDoListyKontaktow(wektorZnajomych);
+				wektorZnajomych = dodajZnajomegoDoListyKontaktow(wektorZnajomych, uzytkownicy, idZalogowanegoUzytkownika);
 				break;
 			case 2:
 				wybierzSposobWyszukiwaniaZnajomego(wektorZnajomych);
@@ -424,7 +423,10 @@ struct Znajomy {
 	string adres;
 };
 
-vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych) {
+vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy) {
+	
+	Uzytkownik uzytkownik;
+
 	string linia;
 	int numerLinii = 1;
 	fstream plik;
@@ -435,6 +437,7 @@ vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych) {
 	if (plik.is_open()) {
 		while (getline(plik, linia)) {
 			string Znajomy[6];
+			string Uzytkownik[1];
 			int dlugoscLinii = linia.length();
 			int beginOfWord = 0;
 			int lengthOfWord = 0;
@@ -450,6 +453,7 @@ vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych) {
 				}
 			}
 			nowyZnajomy.id = atoi(Znajomy[0].c_str());
+			//uzytkownik.idUzytkownika = atoi(Uzytkownik[0].c_str());
 			nowyZnajomy.imie = Znajomy[1];
 			nowyZnajomy.nazwisko = Znajomy[2];
 			nowyZnajomy.numerTelefonu = Znajomy[3];
@@ -469,8 +473,8 @@ vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych) {
 	}
 }
 
-/*
-vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy) {
+
+vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika) {
 
 	Uzytkownik uzytkownik;
 
@@ -513,75 +517,17 @@ vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, 
 	nowyZnajomy = { idOstatniegoZnajomego + 1, imie, nazwisko, numerTelefonu, email, adres };
 
 	wektorZnajomych.push_back(nowyZnajomy);
-
+	
 	plik.open("ksiazka_adresowa.txt", ios::out | ios::app);
 	if (plik.good()) {
-		plik << wektorZnajomych[iloscZnajomych].id << "|";
-		plik << uzytkownicy[iloscZnajomych].idUzytkownika << "|";
-		plik << wektorZnajomych[iloscZnajomych].imie << "|";
-		plik << wektorZnajomych[iloscZnajomych].nazwisko << "|";
-		plik << wektorZnajomych[iloscZnajomych].numerTelefonu << "|";
-		plik << wektorZnajomych[iloscZnajomych].email << "|";
-		plik << wektorZnajomych[iloscZnajomych].adres << "|" << endl;
-		cout << endl;
-		cout << "Dodano nowego znajomego do listy kontaktow!" << endl;
-		cout << endl;
-		plik.close();
-		Sleep(1000);
-		return wektorZnajomych;
-	}
-	else {
-		cout << "Nie udalo sie otworzyc pliku" << endl;
-		system("Pause");
-	}
-}
-*/
-
-vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych) {
-
-	system("cls");
-
-	fstream plik;
-	string imie, nazwisko, numerTelefonu, adres, email;
-	Znajomy nowyZnajomy;
-
-	plik.open("ksiazka_adresowa.txt");
-	if (plik.good()) {
-		plik.close();
-	}
-	else {
-		plik.open("ksiazka_adresowa.txt", ios::out);
-		plik.close();
-	}
-
-	int iloscZnajomych = wektorZnajomych.size();
-	int idOstatniegoZnajomego;
-	if (wektorZnajomych.empty()) {
-		idOstatniegoZnajomego = 0;
-	}
-	else {
-		idOstatniegoZnajomego = wektorZnajomych[iloscZnajomych - 1].id;
-	}
-
-	cout << "Podaj imie znajomego: ";
-	cin >> imie;
-	cout << "Podaj nazwisko znajomego: ";
-	cin >> nazwisko;
-	cin.ignore();
-	cout << "Podaj email znajomego: ";
-	getline(cin, email);
-	cout << "Podaj adres znajomego: ";
-	getline(cin, adres);
-	cout << "Podaj numer telefonu znajomego: ";
-	getline(cin, numerTelefonu);
-
-	nowyZnajomy = { idOstatniegoZnajomego + 1, imie, nazwisko, numerTelefonu, email, adres };
-
-	wektorZnajomych.push_back(nowyZnajomy);
-
-	plik.open("ksiazka_adresowa.txt", ios::out | ios::app);
-	if (plik.good()) {
-		plik << wektorZnajomych[iloscZnajomych].id << "|";		
+		plik << wektorZnajomych[iloscZnajomych].id << "|";	
+		for (int i = 0; i < uzytkownicy.size(); i++)
+		{
+			if (uzytkownicy[i].idUzytkownika == idZalogowanegoUzytkownika)
+			{
+				plik << uzytkownicy[i].idUzytkownika << "|";
+			}
+		}	
 		plik << wektorZnajomych[iloscZnajomych].imie << "|";
 		plik << wektorZnajomych[iloscZnajomych].nazwisko << "|";
 		plik << wektorZnajomych[iloscZnajomych].numerTelefonu << "|";
