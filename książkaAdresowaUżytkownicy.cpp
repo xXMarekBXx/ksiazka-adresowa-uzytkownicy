@@ -436,8 +436,8 @@ vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <U
 
 	if (plik.is_open()) {
 		while (getline(plik, linia)) {
-			string Znajomy[6];
-			string Uzytkownik[1];
+			string Znajomy[7];
+			string Uzytkownik;
 			int dlugoscLinii = linia.length();
 			int beginOfWord = 0;
 			int lengthOfWord = 0;
@@ -453,12 +453,12 @@ vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <U
 				}
 			}
 			nowyZnajomy.id = atoi(Znajomy[0].c_str());
-			//uzytkownik.idUzytkownika = atoi(Uzytkownik[0].c_str());
-			nowyZnajomy.imie = Znajomy[1];
-			nowyZnajomy.nazwisko = Znajomy[2];
-			nowyZnajomy.numerTelefonu = Znajomy[3];
-			nowyZnajomy.email = Znajomy[4];
-			nowyZnajomy.adres = Znajomy[5];
+			uzytkownik.idUzytkownika = atoi(Uzytkownik.c_str());
+			nowyZnajomy.imie = Znajomy[2];
+			nowyZnajomy.nazwisko = Znajomy[3];
+			nowyZnajomy.numerTelefonu = Znajomy[4];
+			nowyZnajomy.email = Znajomy[5];
+			nowyZnajomy.adres = Znajomy[6];
 
 			wektorZnajomych.push_back(nowyZnajomy);
 
