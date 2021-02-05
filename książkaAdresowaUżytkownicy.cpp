@@ -15,7 +15,7 @@ struct Uzytkownik;
 vector<Uzytkownik> odczytUzytkownikowZPliku(vector <Uzytkownik> uzytkownicy);
 
 vector <Uzytkownik> rejestracja(vector <Uzytkownik> uzytkownicy);
-	
+
 int logowanie(vector <Uzytkownik> uzytkownicy);
 
 vector<Uzytkownik> usuwanieUzytkownika(vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
@@ -34,12 +34,27 @@ void zmianaHaslaZalogowanegoUzytkownika(vector <Uzytkownik> &uzytkownicy, int id
 
 struct Znajomy;
 
-vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy);
+int pobierzIdUzytkownikaZDanychOddzielonychPionowymiKreskami(string daneJednegoAdresataOddzielonePionowymiKreskami);
+
+int konwersjaStringNaInt(string liczba);
+
+string pobierzLiczbe(string tekst, int pozycjaZnaku);
+
+//vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy);
+//vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
+//vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, int idZalogowanegoUzytkownika);
+int wczytajAdresatowZalogowanegoUzytkownikaZPliku(vector <Znajomy> &wektorZnajomych, int idZalogowanegoUzytkownika);
+
+Znajomy pobierzDaneAdresata(string daneAdresataOddzielonePionowymiKreskami);
+
+int pobierzIdUzytkownikaZDanychOddzielonychPionowymiKreskami(string daneJednegoAdresataOddzielonePionowymiKreskami);
+
+int pobierzIdAdresataZDanychOddzielonychPionowymiKreskami(string daneJednegoAdresataOddzielonePionowymiKreskami);
 
 vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
 
-bool wyswietlWszystkichZnajomychZalogowanegoUzytkownika(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
-//bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych);
+//bool wyswietlWszystkichZnajomychZalogowanegoUzytkownika(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
+bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych);
 
 bool szukanieKonkretnegoImieniaWWektorze(vector<Znajomy> wektorZnajomych, string imieDoWyszukania);
 
@@ -68,11 +83,10 @@ int main()
 	vector <Uzytkownik> uzytkownicy;
 	uzytkownicy = odczytUzytkownikowZPliku(uzytkownicy);
 
-	int idZalogowanegoUzytkownika = 0;	
+	int idZalogowanegoUzytkownika = 0;
+	int idOstatniegoAdresata = 0;
 
 	vector<Znajomy> wektorZnajomych;
-	wektorZnajomych = odczytZnajomychZPliku(wektorZnajomych, uzytkownicy);
-
 
 	while (true)
 	{
@@ -102,6 +116,11 @@ int main()
 		}
 		else
 		{
+			//wektorZnajomych = odczytZnajomychZPliku(wektorZnajomych, idZalogowanegoUzytkownika);
+			if (wektorZnajomych.empty() == true) {
+				idOstatniegoAdresata = wczytajAdresatowZalogowanegoUzytkownikaZPliku(wektorZnajomych, idZalogowanegoUzytkownika);
+			}
+
 			system("cls");
 			cout << "1. Dodaj znajomego do kontaktow" << endl;
 			cout << "2. Wyszukaj znajomego w ksiazce kontaktow" << endl;
@@ -125,8 +144,8 @@ int main()
 				wybierzSposobWyszukiwaniaZnajomego(wektorZnajomych);
 				break;
 			case 3:
-				//wyswietlWszystkichZnajomychZWektora(wektorZnajomych);
-				wyswietlWszystkichZnajomychZalogowanegoUzytkownika(wektorZnajomych, uzytkownicy, idZalogowanegoUzytkownika);
+				wyswietlWszystkichZnajomychZWektora(wektorZnajomych);
+				//wyswietlWszystkichZnajomychZalogowanegoUzytkownika(wektorZnajomych, uzytkownicy, idZalogowanegoUzytkownika);
 				break;
 			case 4:
 				wektorZnajomych = usuwanieZnajomegoZListyKontaktow(wektorZnajomych);
@@ -140,6 +159,7 @@ int main()
 				break;
 			case 7:
 				idZalogowanegoUzytkownika = 0;
+				wektorZnajomych.clear();
 				break;
 			}
 		}
@@ -229,8 +249,10 @@ vector <Uzytkownik> rejestracja(vector <Uzytkownik> uzytkownicy)
 	cout << "Podaj nazwe uzytkownika: ";
 	cin >> loginNowegoUzytkownika;
 
+	int rozmiarWektoraUzytkownicy = uzytkownicy.size();
+
 	int i = 0;
-	while (i < uzytkownicy.size())
+	while (i < rozmiarWektoraUzytkownicy)
 	{
 		if (uzytkownicy[i].login == loginNowegoUzytkownika)
 		{
@@ -264,19 +286,19 @@ vector <Uzytkownik> rejestracja(vector <Uzytkownik> uzytkownicy)
 
 	plik.open("uzytkownicy.txt", ios::out | ios::app);
 	if (plik.good()) {
-            if(czyPlikJestPusty(plik))
-            {
-                plik << uzytkownicy[iloscUzytkownikow].idUzytkownika << "|";
-                plik << uzytkownicy[iloscUzytkownikow].login << "|";
-                plik << uzytkownicy[iloscUzytkownikow].haslo << "|";
-            }
-            else
-            {
-                plik << endl;
-                plik << uzytkownicy[iloscUzytkownikow].idUzytkownika << "|";
-                plik << uzytkownicy[iloscUzytkownikow].login << "|";
-                plik << uzytkownicy[iloscUzytkownikow].haslo << "|";
-            }
+		if (czyPlikJestPusty(plik))
+		{
+			plik << uzytkownicy[iloscUzytkownikow].idUzytkownika << "|";
+			plik << uzytkownicy[iloscUzytkownikow].login << "|";
+			plik << uzytkownicy[iloscUzytkownikow].haslo << "|";
+		}
+		else
+		{
+			plik << endl;
+			plik << uzytkownicy[iloscUzytkownikow].idUzytkownika << "|";
+			plik << uzytkownicy[iloscUzytkownikow].login << "|";
+			plik << uzytkownicy[iloscUzytkownikow].haslo << "|";
+		}
 
 		cout << endl;
 		cout << "Uzytkownik dodany" << endl;
@@ -288,6 +310,8 @@ vector <Uzytkownik> rejestracja(vector <Uzytkownik> uzytkownicy)
 		cout << "Nie udalo sie otworzyc pliku" << endl;
 		system("Pause");
 	}
+
+	return uzytkownicy;
 }
 
 int logowanie(vector <Uzytkownik> uzytkownicy)
@@ -309,7 +333,9 @@ int logowanie(vector <Uzytkownik> uzytkownicy)
 	cout << "Podaj nazwe uzytkownika: ";
 	cin >> loginAktualnegoUzytkownika;
 
-	for (int i = 0; i < uzytkownicy.size(); i++)
+	int rozmiarWektoraUzytkownicy = uzytkownicy.size();
+
+	for (int i = 0; i < rozmiarWektoraUzytkownicy; i++)
 	{
 		if (uzytkownicy[i].login == loginAktualnegoUzytkownika)
 		{
@@ -363,7 +389,9 @@ vector<Uzytkownik> usuwanieUzytkownika(vector <Uzytkownik> uzytkownicy, int idZa
 	plik.open("temp.txt", ios::out);
 	if (plik.good()) {
 
-		for (int i = 0; i < uzytkownicy.size(); i++) {
+		int rozmiarWektoraUzytkownicy = uzytkownicy.size();
+
+		for (int i = 0; i < rozmiarWektoraUzytkownicy; i++) {
 			if (idZalogowanegoUzytkownika == uzytkownicy[i].idUzytkownika) {
 				continue;
 			}
@@ -380,7 +408,9 @@ vector<Uzytkownik> usuwanieUzytkownika(vector <Uzytkownik> uzytkownicy, int idZa
 		rename("temp.txt", "uzytkownicy.txt");
 
 		int numerZnajomegoDoUsuniecia = 0;
-		for (int i = 0; i < uzytkownicy.size(); i++) {
+		
+
+		for (int i = 0; i < rozmiarWektoraUzytkownicy; i++) {
 			if (uzytkownicy[i].idUzytkownika == idZalogowanegoUzytkownika) {
 				numerZnajomegoDoUsuniecia = i;
 			}
@@ -408,7 +438,9 @@ vector <Uzytkownik> zmianaHasla(vector <Uzytkownik> uzytkownicy, int idZalogowan
 	cout << "Podaj nowe haslo: ";
 	cin >> noweHaslo;
 
-	for (int i = 0; i < uzytkownicy.size(); i++) {
+	int rozmiarWektoraUzytkownicy = uzytkownicy.size();
+
+	for (int i = 0; i < rozmiarWektoraUzytkownicy; i++) {
 		if (uzytkownicy[i].idUzytkownika == idZalogowanegoUzytkownika) {
 			indexDoEdycji = i;
 		}
@@ -513,9 +545,9 @@ void zmianaHaslaZalogowanegoUzytkownika(vector <Uzytkownik> &uzytkownicy, int id
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
 struct Znajomy {
 	int id;
+	int idUzytkownika;
 
 	string imie;
 	string nazwisko;
@@ -524,8 +556,8 @@ struct Znajomy {
 	string adres;
 };
 
-vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy) {
-	
+vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, int idZalogowanegoUzytkownika) {
+
 	Uzytkownik uzytkownik;
 
 	string linia;
@@ -561,7 +593,20 @@ vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <U
 			nowyZnajomy.email = Znajomy[5];
 			nowyZnajomy.adres = Znajomy[6];
 
-			wektorZnajomych.push_back(nowyZnajomy);
+			/*
+			for (int i = 0; i < uzytkownicy.size(); i++)
+			{
+				if (uzytkownicy[i].idUzytkownika == idZalogowanegoUzytkownika)
+				{
+					wektorZnajomych.push_back(nowyZnajomy);
+				}
+			}
+
+			if (uzytkownik.idUzytkownika == idZalogowanegoUzytkownika)
+			{
+				wektorZnajomych.push_back(nowyZnajomy);
+			}
+			*/
 
 		}
 		plik.close();
@@ -574,6 +619,126 @@ vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <U
 	}
 }
 
+int wczytajAdresatowZalogowanegoUzytkownikaZPliku(vector <Znajomy> &wektorZnajomych, int idZalogowanegoUzytkownika)
+{
+	Znajomy nowyZnajomy;
+	int idOstatniegoAdresata = 0;
+	string daneJednegoAdresataOddzielonePionowymiKreskami = "";
+	string daneOstaniegoAdresataWPliku = "";
+	fstream plikTekstowy;
+	plikTekstowy.open("ksiazka_adresowa.txt", ios::in);
+
+	if (plikTekstowy.good() == true)
+	{
+		while (getline(plikTekstowy, daneJednegoAdresataOddzielonePionowymiKreskami))
+		{
+			if (idZalogowanegoUzytkownika == pobierzIdUzytkownikaZDanychOddzielonychPionowymiKreskami(daneJednegoAdresataOddzielonePionowymiKreskami))
+			{
+				nowyZnajomy = pobierzDaneAdresata(daneJednegoAdresataOddzielonePionowymiKreskami);
+				wektorZnajomych.push_back(nowyZnajomy);
+			}
+		}
+		daneOstaniegoAdresataWPliku = daneJednegoAdresataOddzielonePionowymiKreskami;
+	}
+	else
+		cout << "Nie udalo sie otworzyc pliku i wczytac danych." << endl;
+
+	plikTekstowy.close();
+
+	if (daneOstaniegoAdresataWPliku != "")
+	{
+		idOstatniegoAdresata = pobierzIdAdresataZDanychOddzielonychPionowymiKreskami(daneOstaniegoAdresataWPliku);
+		return idOstatniegoAdresata;
+	}
+	else
+		return 0;
+}
+
+//// poniżej inne potrzebne funkcje////
+
+int pobierzIdUzytkownikaZDanychOddzielonychPionowymiKreskami(string daneJednegoAdresataOddzielonePionowymiKreskami)
+{
+	int pozycjaRozpoczeciaIdUzytkownika = daneJednegoAdresataOddzielonePionowymiKreskami.find_first_of('|') + 1;
+	int idUzytkownika = konwersjaStringNaInt(pobierzLiczbe(daneJednegoAdresataOddzielonePionowymiKreskami, pozycjaRozpoczeciaIdUzytkownika));
+
+	return idUzytkownika;
+}
+
+
+int konwersjaStringNaInt(string liczba)
+{
+	int liczbaInt;
+	istringstream iss(liczba);
+	iss >> liczbaInt;
+
+	return liczbaInt;
+}
+
+Znajomy pobierzDaneAdresata(string daneAdresataOddzielonePionowymiKreskami)
+{
+	Znajomy wektorZnajomych;
+	string pojedynczaDanaAdresata = "";
+	int numerPojedynczejDanejAdresata = 1;
+
+	int dlugoscDanychAdresataOddzielonePionowymiKreskami = daneAdresataOddzielonePionowymiKreskami.length();
+
+	for (int pozycjaZnaku = 0; pozycjaZnaku < dlugoscDanychAdresataOddzielonePionowymiKreskami; pozycjaZnaku++)
+	{
+		if (daneAdresataOddzielonePionowymiKreskami[pozycjaZnaku] != '|')
+		{
+			pojedynczaDanaAdresata += daneAdresataOddzielonePionowymiKreskami[pozycjaZnaku];
+		}
+		else
+		{
+			switch (numerPojedynczejDanejAdresata)
+			{
+			case 1:
+				wektorZnajomych.id = atoi(pojedynczaDanaAdresata.c_str());
+				break;
+			case 2:
+				wektorZnajomych.idUzytkownika = atoi(pojedynczaDanaAdresata.c_str());
+				break;
+			case 3:
+				wektorZnajomych.imie = pojedynczaDanaAdresata;
+				break;
+			case 4:
+				wektorZnajomych.nazwisko = pojedynczaDanaAdresata;
+				break;
+			case 5:
+				wektorZnajomych.numerTelefonu = pojedynczaDanaAdresata;
+				break;
+			case 6:
+				wektorZnajomych.email = pojedynczaDanaAdresata;
+				break;
+			case 7:
+				wektorZnajomych.adres = pojedynczaDanaAdresata;
+				break;
+			}
+			pojedynczaDanaAdresata = "";
+			numerPojedynczejDanejAdresata++;
+		}
+	}
+	return wektorZnajomych;
+}
+
+int pobierzIdAdresataZDanychOddzielonychPionowymiKreskami(string daneJednegoAdresataOddzielonePionowymiKreskami)
+{
+	int pozycjaRozpoczeciaIdAdresata = 0;
+	int idAdresata = konwersjaStringNaInt(pobierzLiczbe(daneJednegoAdresataOddzielonePionowymiKreskami, pozycjaRozpoczeciaIdAdresata));
+	return idAdresata;
+}
+
+
+string pobierzLiczbe(string tekst, int pozycjaZnaku)
+{
+	string liczba = "";
+	while (isdigit(tekst[pozycjaZnaku]))
+	{
+		liczba += tekst[pozycjaZnaku];
+		pozycjaZnaku++;
+	}
+	return liczba;
+}
 
 vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika) {
 
@@ -596,6 +761,9 @@ vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, 
 
 	int iloscZnajomych = wektorZnajomych.size();
 	int idOstatniegoZnajomego;
+
+	int idUzytkownika = idZalogowanegoUzytkownika;
+
 	if (wektorZnajomych.empty()) {
 		idOstatniegoZnajomego = 0;
 	}
@@ -615,20 +783,22 @@ vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, 
 	cout << "Podaj numer telefonu znajomego: ";
 	getline(cin, numerTelefonu);
 
-	nowyZnajomy = { idOstatniegoZnajomego + 1, imie, nazwisko, numerTelefonu, email, adres };
+	nowyZnajomy = { idOstatniegoZnajomego + 1, idUzytkownika, imie, nazwisko, numerTelefonu, email, adres };
 
 	wektorZnajomych.push_back(nowyZnajomy);
-	
+
+	int rozmiarWektoraUzytkownicy = uzytkownicy.size();
+
 	plik.open("ksiazka_adresowa.txt", ios::out | ios::app);
 	if (plik.good()) {
-		plik << wektorZnajomych[iloscZnajomych].id << "|";	
-		for (int i = 0; i < uzytkownicy.size(); i++)
+		plik << wektorZnajomych[iloscZnajomych].id << "|";
+		for (int i = 0; i < rozmiarWektoraUzytkownicy; i++)
 		{
 			if (uzytkownicy[i].idUzytkownika == idZalogowanegoUzytkownika)
 			{
 				plik << uzytkownicy[i].idUzytkownika << "|";
 			}
-		}	
+		}
 		plik << wektorZnajomych[iloscZnajomych].imie << "|";
 		plik << wektorZnajomych[iloscZnajomych].nazwisko << "|";
 		plik << wektorZnajomych[iloscZnajomych].numerTelefonu << "|";
@@ -645,9 +815,13 @@ vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, 
 		cout << "Nie udalo sie otworzyc pliku" << endl;
 		system("Pause");
 	}
+
+	return wektorZnajomych;
 }
 
 bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych) {
+
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
 
 	if (wektorZnajomych.empty()) {
 		system("cls");
@@ -657,7 +831,7 @@ bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych) {
 	}
 	else {
 		system("cls");
-		for (int i = 0; i < wektorZnajomych.size(); i++) {
+		for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 			cout << wektorZnajomych[i].imie << endl;
 			cout << wektorZnajomych[i].nazwisko << endl;
 			cout << wektorZnajomych[i].numerTelefonu << endl;
@@ -674,6 +848,8 @@ bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych) {
 
 bool wyswietlWszystkichZnajomychZalogowanegoUzytkownika(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika) {
 
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
 	if (wektorZnajomych.empty()) {
 		system("cls");
 		cout << "Brak znajomych na liscie kontaktow :(" << endl;
@@ -681,7 +857,7 @@ bool wyswietlWszystkichZnajomychZalogowanegoUzytkownika(vector<Znajomy> wektorZn
 		return true;
 	}
 	else {
-		for (int i = 0; i < wektorZnajomych.size(); i++)
+		for (int i = 0; i < rozmiarwektorZnajomych; i++)
 		{
 			if (uzytkownicy[i].idUzytkownika == idZalogowanegoUzytkownika)
 			{
@@ -690,13 +866,13 @@ bool wyswietlWszystkichZnajomychZalogowanegoUzytkownika(vector<Znajomy> wektorZn
 				cout << wektorZnajomych[i].numerTelefonu << endl;
 				cout << wektorZnajomych[i].email << endl;
 				cout << wektorZnajomych[i].adres << endl;
-				
-			}			
-		}	
-		
+
+			}
+		}
+
 		cout << endl;
 		system("pause");
-		return true;		
+		return true;
 	}
 	cout << endl;
 	system("pause");
@@ -705,7 +881,9 @@ bool wyswietlWszystkichZnajomychZalogowanegoUzytkownika(vector<Znajomy> wektorZn
 
 bool szukanieKonkretnegoImieniaWWektorze(vector<Znajomy> wektorZnajomych, string imieDoWyszukania) {
 
-	for (int i = 0; i < wektorZnajomych.size(); i++) {
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
+	for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 		if (wektorZnajomych[i].imie == imieDoWyszukania) {
 			return true;
 		}
@@ -724,9 +902,11 @@ void wyszukiwanieZnajomegoPoImieniu(vector<Znajomy> wektorZnajomych) {
 
 	czyToImieJestWWektorze = szukanieKonkretnegoImieniaWWektorze(wektorZnajomych, imieDoWyszukania);
 
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
 	if (czyToImieJestWWektorze) {
 
-		for (int i = 0; i < wektorZnajomych.size(); i++) {
+		for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 
 			if (imieDoWyszukania == wektorZnajomych[i].imie) {
 				cout << endl;
@@ -750,7 +930,9 @@ void wyszukiwanieZnajomegoPoImieniu(vector<Znajomy> wektorZnajomych) {
 
 bool szukanieKonkretnegoNazwiskaWWektorze(vector<Znajomy> wektorZnajomych, string nazwiskoDoWyszukania) {
 
-	for (int i = 0; i < wektorZnajomych.size(); i++) {
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
+	for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 		if (wektorZnajomych[i].nazwisko == nazwiskoDoWyszukania) {
 			return true;
 		}
@@ -769,9 +951,11 @@ void wyszukiwanieZnajomegoPoNazwisku(vector<Znajomy> wektorZnajomych) {
 
 	czyToNazwiskoJestWWektorze = szukanieKonkretnegoNazwiskaWWektorze(wektorZnajomych, nazwiskoDoWyszukania);
 
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
 	if (czyToNazwiskoJestWWektorze) {
 
-		for (int i = 0; i < wektorZnajomych.size(); i++)
+		for (int i = 0; i < rozmiarwektorZnajomych; i++)
 		{
 			if (nazwiskoDoWyszukania == wektorZnajomych[i].nazwisko) {
 				cout << endl;
@@ -827,12 +1011,16 @@ bool szukanieKonkretnegoIdWWektorze(vector<Znajomy> wektorZnajomych, int szukane
 		return false;
 	}
 
-	for (int i = 0; i < wektorZnajomych.size(); i++) {
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
+	for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 
 		if (wektorZnajomych[i].id == szukaneId) {
 			return true;
 		}
 	}
+
+	return false;
 }
 
 vector<Znajomy> usuwanieZnajomegoZListyKontaktow(vector<Znajomy> wektorZnajomych) {
@@ -848,9 +1036,12 @@ vector<Znajomy> usuwanieZnajomegoZListyKontaktow(vector<Znajomy> wektorZnajomych
 	bool czyToIdJestWWektorze = false;
 
 	czyToIdJestWWektorze = szukanieKonkretnegoIdWWektorze(wektorZnajomych, idZnajomegoDoUsuniecia);
+
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
 	if (czyToIdJestWWektorze) {
 
-		for (int i = 0; i < wektorZnajomych.size(); i++) {
+		for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 			if (idZnajomegoDoUsuniecia == wektorZnajomych[i].id) {
 				system("cls");
 				cout << wektorZnajomych[i].imie << endl;
@@ -867,10 +1058,11 @@ vector<Znajomy> usuwanieZnajomegoZListyKontaktow(vector<Znajomy> wektorZnajomych
 		cin >> wyborUrzytkownika;
 		if (wyborUrzytkownika == "t" || wyborUrzytkownika == "y" || wyborUrzytkownika == "tak" || wyborUrzytkownika == "yes") {
 
+			int rozmiarwektorZnajomych = wektorZnajomych.size();
+
 			plik.open("temp.txt", ios::out);
 			if (plik.good()) {
-
-				for (int i = 0; i < wektorZnajomych.size(); i++) {
+				for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 					if (idZnajomegoDoUsuniecia == wektorZnajomych[i].id) {
 						continue;
 					}
@@ -890,7 +1082,10 @@ vector<Znajomy> usuwanieZnajomegoZListyKontaktow(vector<Znajomy> wektorZnajomych
 				rename("temp.txt", "ksiazka_adresowa.txt");
 
 				int numerZnajomegoDoUsuniecia = 0;
-				for (int i = 0; i < wektorZnajomych.size(); i++) {
+
+				int rozmiarwektorZnajomych = wektorZnajomych.size();
+
+				for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 					if (wektorZnajomych[i].id == idZnajomegoDoUsuniecia) {
 						numerZnajomegoDoUsuniecia = i;
 					}
@@ -934,7 +1129,9 @@ vector<Znajomy> edytujZnajomego(vector<Znajomy> wektorZnajomych, int idZnajomego
 
 	int zmPomDoEdycjiDanejZnajomego;
 
-	for (int i = 0; i < wektorZnajomych.size(); i++) {
+	int rozmiarwektorZnajomych = wektorZnajomych.size();
+
+	for (int i = 0; i < rozmiarwektorZnajomych; i++) {
 		if (wektorZnajomych[i].id == idZnajomegoDoEdycji) {
 			zmPomDoEdycjiDanejZnajomego = i;
 		}
@@ -978,8 +1175,10 @@ vector<Znajomy> edytujZnajomego(vector<Znajomy> wektorZnajomych, int idZnajomego
 		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].email << "|";
 		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].adres << "|" << endl;
 
-		if (zmPomDoEdycjiDanejZnajomego + 1 < wektorZnajomych.size()) {
-			for (int i = idZnajomegoDoEdycji; i < wektorZnajomych.size(); i++) {
+		int rozmiarwektorZnajomych = wektorZnajomych.size();
+
+		if (zmPomDoEdycjiDanejZnajomego + 1 < rozmiarwektorZnajomych) {
+			for (int i = idZnajomegoDoEdycji; i < rozmiarwektorZnajomych; i++) {
 				plik << wektorZnajomych[i].id << "|";
 				plik << wektorZnajomych[i].imie << "|";
 				plik << wektorZnajomych[i].nazwisko << "|";
