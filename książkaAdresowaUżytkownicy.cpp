@@ -78,10 +78,11 @@ int zwrocNumerLiniiSzukanegoAdresata(int idAdresata);
 
 void usunWybranaLinieWPliku(int numerUsuwanejLinii);
 
+void edytujZnajomego(vector <Znajomy> &znajomi);
 
-vector<Znajomy> edytujZnajomego(vector<Znajomy> wektorZnajomych, int idZnajomegoDoEdycji, int wyborUrzytkownika, string ktoraDanaZmienic);
+void zaktualizujDaneWybranegoZnajomego(Znajomy adresat, int idEdytowanegoZnajomego);
 
-vector<Znajomy> wyswietlPodmenuEdycjiZnajomego(vector<Znajomy> wektorZnajomych);
+void edytujWybranaLinieWPliku(int numerEdytowanejLinii, string liniaZDanymiZnajomegoOddzielonePionowymiKreskami);
 
 void balladaNaDowidzenia();
 
@@ -125,7 +126,6 @@ int main()
 		}
 		else
 		{
-			//wektorZnajomych = odczytZnajomychZPliku(wektorZnajomych, idZalogowanegoUzytkownika);
 			if (wektorZnajomych.empty() == true) {
 				idOstatniegoAdresata = wczytajAdresatowZalogowanegoUzytkownikaZPliku(wektorZnajomych, idZalogowanegoUzytkownika);
 			}
@@ -155,18 +155,16 @@ int main()
 				wybierzSposobWyszukiwaniaZnajomego(wektorZnajomych);
 				break;
 			case 3:
-				wyswietlWszystkichZnajomychZWektora(wektorZnajomych);
-				//wyswietlWszystkichZnajomychZalogowanegoUzytkownika(wektorZnajomych, uzytkownicy, idZalogowanegoUzytkownika);
+				wyswietlWszystkichZnajomychZWektora(wektorZnajomych);				
 				break;
 			case 4:
 				idUsunietegoAdresata = usunZnajomego(wektorZnajomych);
 				idOstatniegoAdresata = podajIdOstatniegoAdresataPoUsunieciuWybranegoAdresata(idUsunietegoAdresata, idOstatniegoAdresata);
 				break;
-			case 5:
-				wektorZnajomych = wyswietlPodmenuEdycjiZnajomego(wektorZnajomych);
+			case 5:		
+				edytujZnajomego(wektorZnajomych);
 				break;
-			case 6:
-				//uzytkownicy = zmianaHasla(uzytkownicy, idZalogowanegoUzytkownika);
+			case 6:				
 				zmianaHaslaZalogowanegoUzytkownika(uzytkownicy, idZalogowanegoUzytkownika);
 				break;
 			case 7:
@@ -1104,8 +1102,6 @@ void usunWybranaLinieWPliku(int numerUsuwanejLinii)
 	{
 		while (getline(odczytywanyPlikTekstowy, wczytanaLinia))
 		{
-			// Tych przypadkow jest tyle, gdyz chcemy osiagnac taki efekt,
-			// aby na koncu pliku nie bylo pustej linii
 			if (numerWczytanejLinii == numerUsuwanejLinii) {}
 			else if (numerWczytanejLinii == 1 && numerWczytanejLinii != numerUsuwanejLinii)
 				tymczasowyPlikTekstowy << wczytanaLinia;
@@ -1125,160 +1121,170 @@ void usunWybranaLinieWPliku(int numerUsuwanejLinii)
 	}
 }
 
-vector<Znajomy> edytujZnajomego(vector<Znajomy> wektorZnajomych, int idZnajomegoDoEdycji, int wyborUrzytkownika, string ktoraDanaZmienic) {
-
-	fstream plik;
-
-	int zmPomDoEdycjiDanejZnajomego;
-
-	int rozmiarwektorZnajomych = wektorZnajomych.size();
-
-	for (int i = 0; i < rozmiarwektorZnajomych; i++) {
-		if (wektorZnajomych[i].id == idZnajomegoDoEdycji) {
-			zmPomDoEdycjiDanejZnajomego = i;
-		}
-	}
-
-	switch (wyborUrzytkownika) {
-	case 1:
-		wektorZnajomych[zmPomDoEdycjiDanejZnajomego].imie = ktoraDanaZmienic;
-		break;
-	case 2:
-		wektorZnajomych[zmPomDoEdycjiDanejZnajomego].nazwisko = ktoraDanaZmienic;
-		break;
-	case 3:
-		wektorZnajomych[zmPomDoEdycjiDanejZnajomego].numerTelefonu = ktoraDanaZmienic;
-		break;
-	case 4:
-		wektorZnajomych[zmPomDoEdycjiDanejZnajomego].email = ktoraDanaZmienic;
-		break;
-	case 5:
-		wektorZnajomych[zmPomDoEdycjiDanejZnajomego].adres = ktoraDanaZmienic;
-		break;
-	}
-
-	plik.open("ksiazka_adresowa.txt", ios::out);
-	if (plik.good()) {
-		if (idZnajomegoDoEdycji > 1) {
-			for (int i = 0; i < zmPomDoEdycjiDanejZnajomego; i++) {
-				plik << wektorZnajomych[i].id << "|";
-				plik << wektorZnajomych[i].imie << "|";
-				plik << wektorZnajomych[i].nazwisko << "|";
-				plik << wektorZnajomych[i].numerTelefonu << "|";
-				plik << wektorZnajomych[i].email << "|";
-				plik << wektorZnajomych[i].adres << "|" << endl;
-			}
-		}
-
-		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].id << "|";
-		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].imie << "|";
-		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].nazwisko << "|";
-		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].numerTelefonu << "|";
-		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].email << "|";
-		plik << wektorZnajomych[zmPomDoEdycjiDanejZnajomego].adres << "|" << endl;
-
-		int rozmiarwektorZnajomych = wektorZnajomych.size();
-
-		if (zmPomDoEdycjiDanejZnajomego + 1 < rozmiarwektorZnajomych) {
-			for (int i = idZnajomegoDoEdycji; i < rozmiarwektorZnajomych; i++) {
-				plik << wektorZnajomych[i].id << "|";
-				plik << wektorZnajomych[i].imie << "|";
-				plik << wektorZnajomych[i].nazwisko << "|";
-				plik << wektorZnajomych[i].numerTelefonu << "|";
-				plik << wektorZnajomych[i].email << "|";
-				plik << wektorZnajomych[i].adres << "|" << endl;
-			}
-		}
-		plik.close();
-		cout << endl;
-		cout << "Kontakt zmieniony" << endl;
-		cout << endl;
-		system("Pause");
-		return wektorZnajomych;
-	}
-	else {
-		plik.close();
-		cout << "Blad odczytu pliku!" << endl;
-		system("Pause");
-		return wektorZnajomych;
-	}
-}
-
-vector<Znajomy> wyswietlPodmenuEdycjiZnajomego(vector<Znajomy> wektorZnajomych)
+void edytujZnajomego(vector <Znajomy> &znajomi)
 {
 	system("cls");
+
+	string noweImie, noweNazwisko, nowyNumerTelefonu, nowyEmail, nowyAdresZamieszkania;
+
+	Znajomy adresat;
+	
+	int numerLiniiEdytowanegoAdresata = 0;
+	string liniaZDanymiZnajomego = "";
+
+
+	system("cls");
 	cout << "Podaj id kontaktu do edycji: ";
-	int idZnajomegoDoEdycji;
-	cin >> idZnajomegoDoEdycji;
+	int idEdytowanegoZnajomego;
+	cin >> idEdytowanegoZnajomego;
+	
+	int wyborUrzytkownika;
+	bool czyIstniejeAdresat = false;
 
-	bool czyIstniejeMozliwoscEdycji = false;
+	int dlugoscWektoraZnajomych = znajomi.size();
 
-	czyIstniejeMozliwoscEdycji = szukanieKonkretnegoIdWWektorze(wektorZnajomych, idZnajomegoDoEdycji);
-
-	while (czyIstniejeMozliwoscEdycji) {
-		system("cls");
-		cout << "Edytuj:" << endl;
-		cout << "1. Imie" << endl;
-		cout << "2. Nazwisko" << endl;
-		cout << "3. Numer telefonu" << endl;
-		cout << "4. Email" << endl;
-		cout << "5. Adres" << endl;
-		cout << "6. Powrot do menu glownego" << endl;
-		cout << endl;
-		cout << "Twoj wybor: ";
-		int wyborUrzytkownika;
-		cin >> wyborUrzytkownika;
-
-		switch (wyborUrzytkownika) {
-		case 1: {
-			system("cls");
-			string noweImie;
-			cout << "Podaj nowe imie: ";
-			cin >> noweImie;
-			wektorZnajomych = edytujZnajomego(wektorZnajomych, idZnajomegoDoEdycji, wyborUrzytkownika, noweImie);
-			break;
-		}
-		case 2: {
-			system("cls");
-			string noweNazwisko;
-			cout << "Podaj nowe nazwisko: ";
-			cin >> noweNazwisko;
-			wektorZnajomych = edytujZnajomego(wektorZnajomych, idZnajomegoDoEdycji, wyborUrzytkownika, noweNazwisko);
-			break;
-		}
-		case 3: {
-			system("cls");
-			string nowyNumerTelefonu;
-			cout << "Podaj nowy numer telefonu: ";
-			cin.ignore();
-			getline(cin, nowyNumerTelefonu);
-			wektorZnajomych = edytujZnajomego(wektorZnajomych, idZnajomegoDoEdycji, wyborUrzytkownika, nowyNumerTelefonu);
-			break;
-		}
-		case 4: {
-			system("cls");
-			string nowyEmail;
-			cout << "Podaj nowy email: ";
-			cin >> nowyEmail;
-			wektorZnajomych = edytujZnajomego(wektorZnajomych, idZnajomegoDoEdycji, wyborUrzytkownika, nowyEmail);
-			break;
-		}
-		case 5: {
-			system("cls");
-			string nowyAdres;
-			cout << "Podaj nowy adres: ";
-			cin.ignore();
-			getline(cin, nowyAdres);
-			wektorZnajomych = edytujZnajomego(wektorZnajomych, idZnajomegoDoEdycji, wyborUrzytkownika, nowyAdres);
-			break;
-		}
-		case 6: {
-			wektorZnajomych = wektorZnajomych;
-			czyIstniejeMozliwoscEdycji = false;
-		}
+	for (int i = 0; i < dlugoscWektoraZnajomych; i++)
+	{
+		if (znajomi[i].id == idEdytowanegoZnajomego)
+		{
+			czyIstniejeAdresat = true;
+			do {
+				system("cls");
+				cout << "Edytuj:" << endl;
+				cout << "1. Imie" << endl;
+				cout << "2. Nazwisko" << endl;
+				cout << "3. Numer telefonu" << endl;
+				cout << "4. Email" << endl;
+				cout << "5. Adres" << endl;
+				cout << "6. Powrot do menu glownego" << endl;
+				cout << endl;
+				cout << "Twoj wybor: ";
+			
+				cin >> wyborUrzytkownika;
+			
+				switch (wyborUrzytkownika)
+				{
+				case 1:
+					cout << endl;
+					cout << "Podaj nowe imie: ";				
+					cin.ignore();
+					getline(cin, noweImie);
+					znajomi[i].imie = noweImie;				
+					zaktualizujDaneWybranegoZnajomego(znajomi[i], idEdytowanegoZnajomego);				
+					break;				
+				case 2:
+					cout << endl;
+					cout << "Podaj nowe nazwisko: ";
+					cin.ignore();
+					getline(cin, noweNazwisko);
+					znajomi[i].nazwisko = noweNazwisko;				
+					zaktualizujDaneWybranegoZnajomego(znajomi[i], idEdytowanegoZnajomego);
+					break;
+				case 3:
+					cout << endl;
+					cout << "Podaj nowy numer telefonu: ";
+					cin.ignore();
+					getline(cin, nowyNumerTelefonu);
+					znajomi[i].numerTelefonu = nowyNumerTelefonu;
+					zaktualizujDaneWybranegoZnajomego(znajomi[i], idEdytowanegoZnajomego);
+					break;
+				case 4:
+					cout << endl;
+					cout << "Podaj nowy email: ";
+					cin.ignore();
+					getline(cin, nowyEmail);
+					znajomi[i].email = nowyEmail;
+					zaktualizujDaneWybranegoZnajomego(znajomi[i], idEdytowanegoZnajomego);
+					break;
+				case 5:
+					cout << endl;
+					cout << "Podaj nowy adres zamieszkania: ";
+					cin.ignore();
+					getline(cin, nowyAdresZamieszkania);
+					znajomi[i].adres = nowyAdresZamieszkania;
+					zaktualizujDaneWybranegoZnajomego(znajomi[i], idEdytowanegoZnajomego);
+					break;				
+				case 6:
+					cout << endl << "Powrot do menu uzytkownika" << endl << endl;
+					break;
+				default:
+					cout << endl << "Nie ma takiej opcji w menu! Powrot do menu uzytkownika." << endl << endl;
+					break;
+				}
+			} while (wyborUrzytkownika != 6);
 		}
 	}
-	return wektorZnajomych;
+	if (czyIstniejeAdresat == false)
+	{
+		cout << endl << "Nie ma takiego adresata." << endl << endl;
+	}
+	system("pause");
+}
+
+string zamienDaneZnajomegoNaLinieZDanymiOddzielonymiPionowymiKreskami(Znajomy znajomy)
+{
+	string liniaZDanymiZnajomego = "";
+
+	liniaZDanymiZnajomego += konwerjsaIntNaString(znajomy.id) + '|';
+	liniaZDanymiZnajomego += konwerjsaIntNaString(znajomy.idUzytkownika) + '|';
+	liniaZDanymiZnajomego += znajomy.imie + '|';
+	liniaZDanymiZnajomego += znajomy.nazwisko + '|';
+	liniaZDanymiZnajomego += znajomy.numerTelefonu + '|';
+	liniaZDanymiZnajomego += znajomy.email + '|';
+	liniaZDanymiZnajomego += znajomy.adres + '|';
+
+	return liniaZDanymiZnajomego;
+}
+
+void zaktualizujDaneWybranegoZnajomego(Znajomy znajomy, int idEdytowanegoZnajomego)
+{
+	int numerLiniiEdytowanegoZnajomego = 0;
+	string liniaZDanymiZnajomego = "";
+
+	numerLiniiEdytowanegoZnajomego = zwrocNumerLiniiSzukanegoAdresata(idEdytowanegoZnajomego);
+	liniaZDanymiZnajomego = zamienDaneZnajomegoNaLinieZDanymiOddzielonymiPionowymiKreskami(znajomy);
+	edytujWybranaLinieWPliku(numerLiniiEdytowanegoZnajomego, liniaZDanymiZnajomego);
+
+	cout << endl << "Dane zostaly zaktualizowane." << endl << endl;
+	cout << endl;
+	system("pause");
+}
+
+void edytujWybranaLinieWPliku(int numerEdytowanejLinii, string liniaZDanymiZnajomego)
+{
+	fstream odczytywanyPlikTekstowy, tymczasowyPlikTekstowy;
+	string wczytanaLinia = "";
+	int numerWczytanejLinii = 1;
+
+	odczytywanyPlikTekstowy.open("ksiazka_adresowa.txt", ios::in);
+	tymczasowyPlikTekstowy.open("temp.txt", ios::out | ios::app);
+
+	if (odczytywanyPlikTekstowy.good() == true)
+	{
+		while (getline(odczytywanyPlikTekstowy, wczytanaLinia))
+		{
+			if (numerWczytanejLinii == numerEdytowanejLinii)
+			{
+				if (numerWczytanejLinii == 1)
+					tymczasowyPlikTekstowy << liniaZDanymiZnajomego;
+				else if (numerWczytanejLinii > 1)
+					tymczasowyPlikTekstowy << endl << liniaZDanymiZnajomego;
+			}
+			else
+			{
+				if (numerWczytanejLinii == 1)
+					tymczasowyPlikTekstowy << wczytanaLinia;
+				else if (numerWczytanejLinii > 1)
+					tymczasowyPlikTekstowy << endl << wczytanaLinia;
+			}
+			numerWczytanejLinii++;
+		}
+		odczytywanyPlikTekstowy.close();
+		tymczasowyPlikTekstowy.close();
+
+		remove("ksiazka_adresowa.txt");
+		rename("temp.txt", "ksiazka_adresowa.txt");
+	}
 }
 
 void balladaNaDowidzenia()
