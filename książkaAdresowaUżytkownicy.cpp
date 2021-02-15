@@ -38,6 +38,8 @@ int pobierzIdUzytkownikaZDanychOddzielonychPionowymiKreskami(string daneJednegoA
 
 int konwersjaStringNaInt(string liczba);
 
+string zamienDaneZnajomegoNaLinieZDanymiOddzielonaPionowymiKreskami(Znajomy znajomy);
+
 string pobierzLiczbe(string tekst, int pozycjaZnaku);
 
 vector<Znajomy> odczytZnajomychZPliku(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy);
@@ -50,7 +52,14 @@ int pobierzIdUzytkownikaZDanychOddzielonychPionowymiKreskami(string daneJednegoA
 
 int pobierzIdAdresataZDanychOddzielonychPionowymiKreskami(string daneJednegoAdresataOddzielonePionowymiKreskami);
 
-vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
+//vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
+//int dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika);
+
+void dopiszAdresataDoPliku(Znajomy adresat);
+
+Znajomy podajDaneNowegoAdresata(int idZalogowanegoUzytkownika, int idOstatniegoAdresata);
+
+int dodajAdresata(vector <Znajomy> &adresaci, int idZalogowanegoUzytkownika, int idOstatniegoAdresata);
 
 bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych);
 
@@ -149,7 +158,8 @@ int main()
 			switch (wyborUrzytkownika)
 			{
 			case 1:
-				wektorZnajomych = dodajZnajomegoDoListyKontaktow(wektorZnajomych, uzytkownicy, idZalogowanegoUzytkownika);
+				//wektorZnajomych = dodajZnajomegoDoListyKontaktow(wektorZnajomych, uzytkownicy, idZalogowanegoUzytkownika);
+				dodajAdresata(wektorZnajomych, idZalogowanegoUzytkownika, idOstatniegoAdresata);			
 				break;
 			case 2:
 				wybierzSposobWyszukiwaniaZnajomego(wektorZnajomych);
@@ -734,7 +744,8 @@ string pobierzLiczbe(string tekst, int pozycjaZnaku)
 	return liczba;
 }
 
-vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika) {
+/*
+int dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, vector <Uzytkownik> uzytkownicy, int idZalogowanegoUzytkownika) {
 
 	Uzytkownik uzytkownik;
 
@@ -762,7 +773,8 @@ vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, 
 		idOstatniegoZnajomego = 0;
 	}
 	else {
-		idOstatniegoZnajomego = wektorZnajomych[iloscZnajomych - 1].id;
+		//idOstatniegoZnajomego = wektorZnajomych[iloscZnajomych - 1].id;
+		idOstatniegoZnajomego = dodajAdresata(wektorZnajomych, idZalogowanegoUzytkownika, idOstatniegoZnajomego);
 	}
 
 	cout << "Podaj imie znajomego: ";
@@ -803,14 +815,108 @@ vector<Znajomy> dodajZnajomegoDoListyKontaktow(vector<Znajomy> wektorZnajomych, 
 		cout << endl;
 		plik.close();
 		Sleep(1000);
-		return wektorZnajomych;
+		//return wektorZnajomych;
 	}
 	else {
 		cout << "Nie udalo sie otworzyc pliku" << endl;
 		system("Pause");
 	}
 
-	return wektorZnajomych;
+	//return wektorZnajomych;
+	return idOstatniegoZnajomego;
+}
+*/
+
+string zamienDaneZnajomegoNaLinieZDanymiOddzielonaPionowymiKreskami(Znajomy znajomy)
+{
+	string liniaZDanymiZnajomego = "";
+
+	liniaZDanymiZnajomego += konwerjsaIntNaString(znajomy.id) + '|';
+	liniaZDanymiZnajomego += konwerjsaIntNaString(znajomy.idUzytkownika) + '|';
+	liniaZDanymiZnajomego += znajomy.imie + '|';
+	liniaZDanymiZnajomego += znajomy.nazwisko + '|';
+	liniaZDanymiZnajomego += znajomy.numerTelefonu + '|';
+	liniaZDanymiZnajomego += znajomy.email + '|';
+	liniaZDanymiZnajomego += znajomy.adres + '|';
+	
+	return liniaZDanymiZnajomego;
+}
+
+void dopiszAdresataDoPliku(Znajomy adresat)
+{
+	string liniaZDanymiAdresata = "";
+	fstream plikTekstowy;
+	plikTekstowy.open("ksiazka_adresowa.txt", ios::out | ios::app);
+
+	if (plikTekstowy.good() == true)
+	{
+		liniaZDanymiAdresata = zamienDaneZnajomegoNaLinieZDanymiOddzielonaPionowymiKreskami(adresat);
+
+		if (czyPlikJestPusty(plikTekstowy) == true)
+		{
+			plikTekstowy << liniaZDanymiAdresata;
+		}
+		else
+		{
+			plikTekstowy << endl << liniaZDanymiAdresata;
+		}
+	}
+	else
+	{
+		cout << "Nie udalo sie otworzyc pliku i zapisac w nim danych." << endl;
+	}
+	plikTekstowy.close();
+	cout << endl;
+	cout << "Dodano nowego znajomego do listy kontaktow :)" << endl;
+	cout << endl;
+	system("pause");
+}
+
+Znajomy podajDaneNowegoAdresata(int idZalogowanegoUzytkownika, int idOstatniegoAdresata)
+{
+	Znajomy adresat;
+
+	string imie, nazwisko, numerTelefonu, adres, email;
+
+	adresat.id = ++idOstatniegoAdresata;
+	adresat.idUzytkownika = idZalogowanegoUzytkownika;
+
+	cout << "Podaj imie znajomego: ";	
+	cin >> imie;
+	adresat.imie = imie;
+
+	cout << "Podaj nazwisko znajomego: ";	
+	cin >> nazwisko;
+	adresat.nazwisko = nazwisko;
+
+	cout << "Podaj email znajomego: ";
+	cin.ignore();
+	getline(cin, email);
+	adresat.email = email;
+
+	cout << "Podaj adres znajomego: ";
+	getline(cin, adres);
+	adresat.adres = adres;
+
+	cout << "Podaj numer telefonu znajomego: ";
+	getline(cin, numerTelefonu);
+	adresat.numerTelefonu = numerTelefonu;
+
+	return adresat;
+}
+
+int dodajAdresata(vector <Znajomy> &adresaci, int idZalogowanegoUzytkownika, int idOstatniegoAdresata)
+{
+	Znajomy adresat;
+
+	system("cls");
+	cout << "Dodawanie nowego znajomego" << endl << endl;
+	adresat = podajDaneNowegoAdresata(idZalogowanegoUzytkownika, idOstatniegoAdresata);
+
+	adresaci.push_back(adresat);
+	dopiszAdresataDoPliku(adresat);
+
+	return ++idOstatniegoAdresata;
 }
 
 bool wyswietlWszystkichZnajomychZWektora(vector<Znajomy> wektorZnajomych) {
